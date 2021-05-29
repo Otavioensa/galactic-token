@@ -49,6 +49,22 @@ contract GalacticToken {
     return true;
   }
 
-  // transferFrom
+  function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
+    // require enough tokens
+    require(_value <= balanceOf[_from]);
 
+    // require msg.sender to have enough allowance
+    require(_value <= allowance[_from][msg.sender]);
+
+    // change the balance
+    balanceOf[_from] -= _value;
+    balanceOf[_to] += _value;
+
+    // update allowance
+    allowance[_from][msg.sender] -= _value;
+
+    // transfer event
+    emit Transfer(_from, _to, _value);
+    return true;
+  }
 } 
