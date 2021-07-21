@@ -3,10 +3,11 @@ pragma solidity >=0.4.22 <0.9.0;
 import "./GalacticToken.sol";
 
 contract GltkTokenSale {
-  address admin;
+  address payable admin;
   GalacticToken public tokenContract;
   uint256 public tokenPrice;
   uint256 public tokensSold;
+
 
   event Sell(
     address _buyer,
@@ -33,5 +34,15 @@ contract GltkTokenSale {
 
     tokensSold += _numberOfTokens;
     emit Sell(msg.sender, _numberOfTokens);
+  }
+
+  function endSale() public {
+    // require admin
+    require(msg.sender == admin);
+    // transfer remaining tokens to admin
+    // msg.sender.transfer(address(this).balance);
+     admin.transfer(address(this).balance);
+    // destroy contract
+    selfdestruct(admin);
   }
 }

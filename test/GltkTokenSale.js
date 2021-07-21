@@ -67,4 +67,23 @@ contract('GltkTokenSale', (accounts) => {
 
     assert.equal(insufficientTokensErrorMessage.indexOf('revert') > 0, true, 'it can only buy up to 750000 tokens')
   })
+
+  it('ends token sale', async () => {
+    // try to end sale from account other than admin
+    let endSaleErrorMessage
+    try {
+      await gltkTokenSale.endSale({ from: buyer })
+    } catch (error) {
+      endSaleErrorMessage = error.message
+    }
+    assert.equal(endSaleErrorMessage.indexOf('revert') > 0, true, 'must be admin to end sale')
+
+    //end sale as admin
+    const result = await gltkTokenSale.endSale({ from: admin })
+
+    const adminBalance = await gltkToken.balanceOf(admin)
+    console.log(adminBalance.toNumber());
+    const tkPrice = await gltkTokenSale.tokenPrice()
+    console.log(tkPrice);
+  })
 })
